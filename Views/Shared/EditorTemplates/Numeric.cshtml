@@ -1,0 +1,10 @@
+﻿@{
+    int scale = this.ViewData.ModelMetadata.AdditionalValues.ValueOrDefault("Scale").ValueOrDefault(o => (int)o);
+    Dictionary<string, object> attributes = new Dictionary<string, object>()
+    {
+        { "class", "Numeric" },
+        { "data-scale", scale }
+    };
+}
+
+@Html.TextBoxFor(m => m, attributes)

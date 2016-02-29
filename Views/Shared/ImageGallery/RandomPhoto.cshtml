@@ -1,0 +1,7 @@
+﻿@model QuantumConcepts.Common.Mvc.Models.ImageGallery.PhotoModel
+
+@{
+    this.Layout = null;
+}
+
+<a class="RandomPhoto" href="@Url.Action("Photo", this.ViewBag.Controller, new { ID = this.Model.ID })" title="@this.Model.Title"><img src="@Url.Action("PhotoSized", new { ID = this.Model.ID, MaxWidth = this.ViewBag.MaxWidth, MaxHeight = this.ViewBag.MaxHeight })" title="@this.Model.Title" /></a>

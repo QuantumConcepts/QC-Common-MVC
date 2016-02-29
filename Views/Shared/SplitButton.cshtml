@@ -1,0 +1,32 @@
+﻿@model QuantumConcepts.Common.Mvc.Models.SplitButtonModel
+
+@if (this.Model.DropDownButton != null && !this.Model.Items.IsNullOrEmpty())
+{
+    string dropDownOptions = this.Model.DropDownButton.Options;
+    string dropDownText = this.Model.DropDownButton.Text;
+
+    if (dropDownOptions.IsNullOrEmpty())
+    {
+        dropDownOptions = "{ \"text\": false, \"icons\": { \"primary\": \"ui-icon-triangle-1-s\" } }";
+    }
+
+    if (dropDownText.IsNullOrEmpty())
+    {
+        dropDownText = "&nbsp;";
+    }
+
+    <div class="SplitButton">
+        <a href="@this.Model.DefaultButton.Href" class="Button Default @this.Model.DefaultButton.Class" data-options='@this.Model.DefaultButton.Options'>@this.Model.DefaultButton.Text</a>
+        <a href="JavaScript: void(0);" class="Button DropDown @this.Model.DropDownButton.Class" data-options='@dropDownOptions'>@dropDownText</a>
+        <ul>
+            @foreach (var item in this.Model.Items)
+            {
+                <li><a href="@item.Href" class="Button @item.Class" data-options='@item.Options'>@item.Text</a></li>
+            }
+        </ul>
+    </div>
+}
+else
+{
+    <a href="@this.Model.DefaultButton.Href" class="Button @this.Model.DefaultButton.Class" data-options='@this.Model.DefaultButton.Options'>@this.Model.DefaultButton.Text</a>
+}

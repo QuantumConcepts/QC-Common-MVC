@@ -1,0 +1,3 @@
+﻿@model int?
+
+@(this.Model.HasValue ? this.Model.Value.ToString("N0") : string.Empty)

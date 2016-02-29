@@ -1,0 +1,10 @@
+﻿@model QuantumConcepts.Common.Mvc.Models.ImageGallery.PhotoModel
+
+<div class="PhotoThumb" onclick="window.location = '@Url.Action("Photo", new { ID = this.Model.ID })';">
+    @if (!this.Model.Title.IsNullOrEmpty())
+    {
+        <h2 title="@this.Model.Title">@this.Model.Title</h2>
+    }
+
+    <img src="@Url.Action("PhotoThumb", new { ID = this.Model.ID })" title="@this.Model.Title" />
+</div>

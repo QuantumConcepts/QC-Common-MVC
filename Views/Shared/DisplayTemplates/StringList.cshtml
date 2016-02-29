@@ -1,0 +1,15 @@
+﻿@model System.Collections.IList
+@using QuantumConcepts.Common.Extensions;
+@using QuantumConcepts.Common.Mvc.Extensions;
+
+@{
+    List<string> items = (this.Model as List<string>);
+    
+    if (!items.IsNullOrEmpty())
+    {
+        foreach (string item in items)
+        {
+            @item<br />
+        }
+    }
+}

@@ -1,0 +1,3 @@
+﻿@model decimal?
+
+@(this.Model.HasValue ? this.Model.Value.ToString("C2") : null)

@@ -1,0 +1,15 @@
+﻿@model decimal?
+
+@if (this.Model.HasValue)
+{
+    <div class="ProgressBar">
+        <div class="Bar@(this.Model.Value >= 1 ? " Full" : string.Empty)">
+            <div class="Gradient" style="width: @this.Model.Value.ToString("P0").Replace(" ", "")"></div>
+        </div>
+        <div class="Text">@this.Model.Value.ToString("P0")</div>
+    </div>
+}
+else
+{
+    @:--
+}

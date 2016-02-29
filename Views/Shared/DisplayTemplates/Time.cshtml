@@ -1,0 +1,2 @@
+﻿@model System.DateTime?
+@(this.Model.HasValue ? this.Model.Value.ToShortTimeString() : string.Empty)

@@ -1,0 +1,62 @@
+﻿@using QuantumConcepts.Common.Mvc.Models;
+@using System.Text.RegularExpressions;
+
+@model TableModel
+
+@{
+    bool hasActions = (this.Model.SplitButton != null);
+}
+
+@if (this.Model.Items.IsNullOrEmpty())
+{
+    <p>No items found.</p>
+}
+else
+{
+    <table>
+        <colgroup>
+            @foreach (string columnName in this.Model.ColumnNames)
+            {
+                <col />
+            }
+
+            @if (hasActions)
+            {
+                <col class="Actions"/>
+            }
+        </colgroup>
+        <thead>
+            <tr>
+                @foreach (string columnDisplayName in this.Model.ColumnDisplayNames)
+                {
+                    <th scope="col">@columnDisplayName</th>
+                }
+
+                @if (hasActions)
+                {
+                    <th scope="col" class="Actions actions"></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in this.Model.GetItemDictionaries())
+            {
+                object itemID = this.Model.GetItemValue(item, this.Model.IDPropertyName).Value;
+                
+                <tr data-id="@itemID">
+                    @foreach (var value in this.Model.GetItemValues(item))
+                    {
+                        <td>@Html.DisplayFor(m => value.Value, value.Info.DataType)</td>
+                    }
+
+                    @if (hasActions)
+                    {
+                        <td class="Actions actions">
+                            @{Html.RenderPartial("SplitButton", this.Model.CreateSplitButtonForItem(item));}
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

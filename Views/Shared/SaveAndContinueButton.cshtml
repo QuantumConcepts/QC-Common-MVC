@@ -1,0 +1,10 @@
+﻿@using QuantumConcepts.Common.Extensions;
+@using QuantumConcepts.Common.Mvc.Extensions;
+
+@{
+    IDictionary<string, object> modelDictionary = new RouteValueDictionary(this.Model);
+    string id = (modelDictionary.ValueOrDefault("ID") as string ?? this.ViewData.ValueOrDefault("ID") as string ?? "save");
+    string icon = (modelDictionary.ValueOrDefault("Icon") as string ?? this.ViewData.ValueOrDefault("Icon") as string ?? "check");
+    string text = (modelDictionary.ValueOrDefault("Text") as string ?? this.ViewData.ValueOrDefault("Text") as string ?? "Save & Continue");
+}
+@{Html.RenderPartial("SaveButton", new { ID = id, Icon = icon, Text = text });}

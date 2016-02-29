@@ -1,0 +1,179 @@
+﻿@model IEnumerable<SequencedListItem>
+@using QuantumConcepts.Common.Mvc.Models
+@using QuantumConcepts.Common.Extensions;
+@using QuantumConcepts.Common.Mvc.Extensions;
+
+@{
+    bool allowAdd = (this.ViewData.ModelMetadata.AdditionalValues.ContainsKey("AllowAdd") ? (bool)this.ViewData.ModelMetadata.AdditionalValues["AllowAdd"] : false);
+    bool allowEdit = (this.ViewData.ModelMetadata.AdditionalValues.ContainsKey("AllowEdit") ? (bool)this.ViewData.ModelMetadata.AdditionalValues["AllowEdit"] : false);
+    bool allowDelete = (this.ViewData.ModelMetadata.AdditionalValues.ContainsKey("AllowDelete") ? (bool)this.ViewData.ModelMetadata.AdditionalValues["AllowDelete"] : false);
+    string id = this.ViewData.TemplateInfo.GetFullHtmlFieldId(null);
+    string name = this.ViewData.TemplateInfo.GetFullHtmlFieldName(null);
+    string addID = this.ViewData.TemplateInfo.GetFullHtmlFieldId("add");
+    string addLinkID = this.ViewData.TemplateInfo.GetFullHtmlFieldId("addLink");
+    
+}
+
+<div id="@id" class="SequencedList Sortable" data-options='{ "revert": true }'>
+</div>
+
+@if (allowAdd)
+{
+    <div class="SequencedListActions">
+        <input id="@addID" type="text" />
+        <a id="@addLinkID" class="Button Small" data-options='{ "icons": { "primary": "ui-icon-plus" } }'>Add</a>
+    </div>
+}
+
+@Html.ValidationMessageFor(m => m)
+
+<script type="text/javascript">
+    var @(name)_ready = false;
+
+    function @(name)_addItem(sequence, value, text)
+    {
+        var textbox = $("#@addID");
+        
+        text = (text == null ? textbox.val() : text);
+
+        if (text != null && text != "")
+        {
+            var container = $("#@id");
+            var div = null;
+            var sequenceInput = null;
+            var valueInput = null;
+            var textInput = null;
+            var textSpan = null;
+            var removeAnchor = null;
+
+            if (sequence == null)
+            {
+                var lastItem = $("#@id > div:last-child > input:first-child");
+
+                if (lastItem != null && lastItem.length > 0)
+                    sequence = (parseInt(lastItem.val()) + 1);
+                else
+                    sequence = 0;
+            }
+
+            div = $(document.createElement("div"));
+            sequenceInput = $(document.createElement("input"));
+            valueInput = $(document.createElement("input"));
+            textInput = $(document.createElement("input"));
+            textSpan = $(document.createElement("span"));
+            removeAnchor = $(document.createElement("a"));
+
+            div.css("cursor", "s-resize");
+
+            sequenceInput.attr("type", "hidden");
+            valueInput.attr("type", "hidden");
+            textInput.attr("type", "hidden");
+
+            @(name)_configSequenceInput(sequenceInput, sequence);
+            @(name)_configValueInput(valueInput, sequence, value);
+            @(name)_configTextInput(textInput, sequence, text);
+            
+            textSpan.text(text);
+
+            removeAnchor.addClass("Button Small");
+            removeAnchor.text("Remove");
+            removeAnchor.button({ icons: { primary: "ui-icon-cancel" } });
+            removeAnchor.click(function ()
+            {
+                $(this).parent("div").remove();
+                @(name)_resequenceItems();
+            });
+
+            div.append(sequenceInput);
+            div.append(valueInput);
+            div.append(textInput);
+            div.append(textSpan);
+            div.append(removeAnchor);
+            container.append(div);
+
+            textbox.val("");
+            textbox.focus();
+
+            if (@(name)_ready && @(name)_updated != null)
+                @(name)_updated();
+        }
+    }
+
+    function @(name)_configSequenceInput(obj, sequence)
+    {
+        obj.attr("id", "@(id)[" + sequence + "]_Sequence");
+        obj.attr("name", "@(name)[" + sequence + "].Sequence");
+        obj.attr("value", sequence);
+    }
+
+    function @(name)_configValueInput(obj, sequence, value)
+    {
+        obj.attr("id", "@(id)[" + sequence + "]_Value");
+        obj.attr("name", "@(name)[" + sequence + "].Value");
+
+        if (value != null)
+            obj.attr("value", value);
+    }
+
+    function @(name)_configTextInput(obj, sequence, text)
+    {
+        obj.attr("id", "@(id)[" + sequence + "]_Text");
+        obj.attr("name", "@(name)[" + sequence + "].Text");
+
+        if (text != null)
+            obj.attr("value", text);
+    }
+
+    function @(name)_resequenceItems()
+    {
+        var items = $("#@id > div");
+
+        for (i = 0; i < items.length; i++)
+        {
+            var item = items[i];
+            var sequenceInput = $(item).find("input:first-child");
+            var valueInput = $(item).find("input:nth-child(2)");
+            var textInput = $(item).find("input:nth-child(3)");
+            
+            @(name)_configSequenceInput(sequenceInput, i);
+            @(name)_configValueInput(valueInput, i, null);
+            @(name)_configTextInput(textInput, i, null);
+        }
+
+        if (@(name)_updated != null)
+            @(name)_updated();
+    }
+
+    function @(name)_init()
+    {
+        @if (!this.Model.IsNullOrEmpty())
+        {
+            foreach (var item in this.Model)
+            {
+                @(name)@:_addItem(@item.Sequence, "@item.Value", "@item.Label");
+            }
+        }
+
+        @(name)_ready = true;
+    }
+    
+    $("#@id").bind("sortstop", @(name)_resequenceItems);
+    $("#@id > div").disableSelection();
+
+    $("#@addID").keypress(function (e)
+    {
+        if ((e.keyCode != null ? e.keyCode : e.which) == 13)
+        {
+            @(name)_addItem();
+
+            return false;
+        }
+    });
+
+    $("#@addLinkID").click(function ()
+    {
+        @(name)_addItem();
+    });
+
+    AbstractAssistance.addInit(@(name)_init);
+</script>

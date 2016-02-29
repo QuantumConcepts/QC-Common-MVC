@@ -1,0 +1,5 @@
+﻿@model System.DateTime?
+@using QuantumConcepts.Common.Extensions;
+
+@Html.TextBox(string.Empty, (this.Model.HasValue ? this.Model.Value.ToDisplayString() : string.Empty), new { @class = "Date" })
+@Html.ValidationMessage(string.Empty)

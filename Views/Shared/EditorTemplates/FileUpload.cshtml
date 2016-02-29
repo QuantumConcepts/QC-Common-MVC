@@ -1,0 +1,11 @@
+﻿@{
+    IDictionary<string, object> htmlAttributes = Html.GetUnobtrusiveValidationAttributes(string.Empty);
+
+    if (this.ViewData.ModelMetadata.AdditionalValues.ContainsKey("Accept"))
+    {
+        htmlAttributes.Add("accept", this.ViewData.ModelMetadata.AdditionalValues["Accept"]);
+    }
+}
+
+<input type="file" id="@this.ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)" name="@this.ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty)" @(new MvcHtmlString(htmlAttributes.ToHtmlAttributesString())) />
+@Html.ValidationMessage(string.Empty)

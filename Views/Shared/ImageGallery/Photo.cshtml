@@ -1,0 +1,60 @@
+﻿@using QuantumConcepts.Common.Mvc.Models.ImageGallery;
+
+@model PhotoModel
+
+@{
+    int photoIndex = this.Model.Album.Photos.IndexOf(this.Model);
+    
+    this.ViewBag.PhotoIndex = photoIndex;
+    this.ViewBag.HasPreviousPhoto = (this.ViewBag.PhotoIndex > 0);
+    this.ViewBag.HasNextPhoto = (this.ViewBag.PhotoIndex < (this.Model.Album.Photos.Count - 1));
+}
+
+@if (!this.Model.Description.IsNullOrEmpty())
+{
+    <p>@this.Model.Description</p>
+}
+
+<div class="Photo">
+    @WriteNavLinks()
+    <img src="@Url.Action("PhotoSized", new { ID = this.Model.ID, MaxWidth = 1115 })" title="@this.Model.Title"/>
+</div>
+
+<script type="text/javascript">
+    function switchPhoto(e)
+    {
+        @if (this.ViewBag.HasPreviousPhoto)
+        {
+            <text>
+                if (e.which == 37)
+                    document.location = "@Url.Action("Photo", new { ID = this.Model.Album.Photos[this.ViewBag.PhotoIndex - 1].ID })";
+            </text>
+        }
+
+        @if (this.ViewBag.HasNextPhoto)
+        {
+            <text>
+                if (e.which == 39)
+                    document.location = "@Url.Action("Photo", new { ID = this.Model.Album.Photos[this.ViewBag.PhotoIndex + 1].ID })";
+            </text>
+        }
+    }
+
+    if ($.browser.mozilla)
+        $(document).keypress(switchPhoto);
+    else
+        $(document).keydown(switchPhoto);
+</script>
+
+@helper WriteNavLinks()
+{
+    if (this.ViewBag.HasPreviousPhoto)
+    {
+        <a href="@Url.Action("Photo", new { ID = this.Model.Album.Photos[this.ViewBag.PhotoIndex - 1].ID })" class="Button PreviousPhoto" data-options='{ "icons": { "primary": "ui-icon-triangle-1-w" }, "text": false }'>Previous Photo</a>
+    }
+    
+    if (this.ViewBag.HasNextPhoto)
+    {
+        <a href="@Url.Action("Photo", new { ID = this.Model.Album.Photos[this.ViewBag.PhotoIndex + 1].ID })" class="Button NextPhoto" data-options='{ "icons": { "primary": "ui-icon-triangle-1-e" }, "text": false }'>Next Photo</a>
+    }
+}

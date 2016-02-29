@@ -1,0 +1,52 @@
+﻿@using System.Collections
+@using QuantumConcepts.Common.Mvc.Models
+@using QuantumConcepts.Common.Extensions;
+@using QuantumConcepts.Common.Mvc.Extensions;
+
+@{
+    List<ListItem> list = (List<ListItem>)this.ViewData["List"];
+    string selectedLabel = (this.Model == null ? list.First().Label : list.SingleOrDefault(o => string.Equals(o.Value, this.Model.ToString())).ValueOrDefault(o => o.Label));
+    string hiddenName = this.ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty);
+    string textBoxName = this.ViewData.TemplateInfo.GetFullHtmlFieldId("TextBox");
+    int minLength = (int)this.ViewData.ModelMetadata.AdditionalValues.ValueOrDefault("AutoCompleteMinLength").ValueOr(3);
+}
+
+@Html.HiddenFor(m => m)
+@Html.TextBox("TextBox", selectedLabel)
+@Html.ValidationMessage(string.Empty)
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        var items = [ @(new MvcHtmlString(string.Join(", ", list.Select(o => "{{ value: \"{0}\", label: \"{1}\" }}".FormatString(o.Value, o.Label.Replace("\"", "\\\""))).ToArray()))) ];
+
+        $("#@textBoxName").autocomplete(
+        {
+            minLength: @minLength,
+            source: items,
+            select: function (e, o)
+            {
+                $("#@hiddenName").val(o.item.value);
+                $("#@textBoxName").val(o.item.label);
+
+                return false;
+            },
+            focus: function (e, o)
+            {
+                $("#@textBoxName").val(o.item.label);
+
+                return false;
+            },
+            change: function (e, o)
+            {
+                if (o.item == null)
+                {
+                    var item = items[0];
+
+                    $("#@hiddenName").val(item.value);
+                    $("#@textBoxName").val(item.label);
+                }
+            }
+        });
+    });
+</script>

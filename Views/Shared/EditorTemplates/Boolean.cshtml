@@ -1,0 +1,18 @@
+﻿@model bool?
+
+@{
+    string fieldName = this.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty);
+    string onID = "{0}_On".FormatString(this.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty));
+    string offID = "{0}_Off".FormatString(this.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty));
+    string trueLabel = (this.ViewData.ModelMetadata.AdditionalValues.ValueOrDefault("TrueLabel") as string ?? "Yes");
+    string falseLabel = (this.ViewData.ModelMetadata.AdditionalValues.ValueOrDefault("FalseLabel") as string ?? "No");
+}
+
+<div class="Radio Small">
+    <input type="radio" id="@onID" name="@fieldName" value="true"@(new MvcHtmlString(this.Model.IsTrue() ? " checked=\"checked\"" : "")) />
+    <label for="@onID">@trueLabel</label>
+    <input type="radio" id="@offID" name="@fieldName" value="false"@(new MvcHtmlString(!this.Model.IsTrue() ? " checked=\"checked\"" : "")) />
+    <label for="@offID">@falseLabel</label>
+</div>
+
+@Html.ValidationMessage(string.Empty)

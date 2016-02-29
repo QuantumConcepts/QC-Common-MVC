@@ -1,0 +1,9 @@
+﻿@{
+    string href = this.ViewBag.Href;
+    string onClick = this.ViewBag.OnClick;
+    string icon = this.ViewBag.Icon;
+    string text = this.ViewBag.Text;
+    string @class = this.ViewBag.Class;
+}
+
+<a href="@href" class="Button @(@class)" title="@text" onclick="@onClick" data-options='{ "icons": { "primary": "ui-icon-@icon" } }'>@text</a>

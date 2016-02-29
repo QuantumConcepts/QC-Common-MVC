@@ -1,0 +1,31 @@
+﻿@using QuantumConcepts.Common.Mvc.Models
+@using System.Collections.Generic
+           
+@{
+    string modelValue = (this.Model == null ? null : this.Model.ToString());
+    IEnumerable<BlockButton> list = (IEnumerable<BlockButton>)this.ViewData.GetListItemData();
+}
+
+@if (!list.IsNullOrEmpty())
+{
+    <ul class="BlockButtons">
+
+        @foreach (var item in list)
+        {
+            string dataString = null;
+
+            if (!item.Data.IsNullOrEmpty())
+            {
+                dataString = string.Join(" ", item.Data.ToListOrEmpty<KeyValuePair<string, string>>().Select(o => "data-{0}=\"{1}\"".FormatString(o.Key, o.Value)).ToList());
+            }
+            
+            <li data-value="@item.Value" @(new HtmlString(dataString)) class="@(string.Equals(modelValue, item.Value) ? "Selected" : string.Empty)" onclick="SelectBlockButton(this)">
+                <h3>@item.Label</h3>
+                <p>@item.Description</p>
+            </li>
+        }
+
+    </ul>
+}
+
+@Html.ValidationMessageFor(m => m)

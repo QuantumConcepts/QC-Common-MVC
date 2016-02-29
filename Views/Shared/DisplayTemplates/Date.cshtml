@@ -1,0 +1,4 @@
+﻿@model System.DateTime?
+@using QuantumConcepts.Common.Extensions;
+
+@(this.Model.HasValue ? this.Model.Value.ToDisplayString(false) : string.Empty)

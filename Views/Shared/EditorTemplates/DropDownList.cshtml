@@ -1,0 +1,21 @@
+﻿@using System.Collections
+@using QuantumConcepts.Common.Mvc.Models
+@using QuantumConcepts.Common.Extensions;
+@using QuantumConcepts.Common.Mvc.Extensions;
+
+@{
+    string modelValue = (this.Model == null ? null : this.Model.ToString());
+    List<ListItem> list = (List<ListItem>)this.ViewData["List"];
+    List<SelectListItem> selectListItems = null;
+    SelectList selectList = null;
+
+    if (list.IsNullOrEmpty()) {
+        selectList = new SelectList(new List<ListItem>());
+    } else {
+        selectListItems = list.Select(o => new SelectListItem() { Value = Convert.ToString(o.Value), Text = o.Label, Selected = string.Equals(modelValue, o.Value) }).ToList();
+        selectList = new SelectList(selectListItems, "Value", "Text", modelValue);
+    }
+}
+
+@Html.DropDownListFor(m => m, selectList)
+@Html.ValidationMessage(string.Empty)

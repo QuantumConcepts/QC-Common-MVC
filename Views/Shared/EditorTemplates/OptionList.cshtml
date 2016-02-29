@@ -1,0 +1,5 @@
+﻿@model OptionList<ListItem>
+@using QuantumConcepts.Common.Mvc.Models
+
+@Html.EditorFor(m => m.Options)
+@Html.ValidationMessage(string.Empty, "A selection is required.")

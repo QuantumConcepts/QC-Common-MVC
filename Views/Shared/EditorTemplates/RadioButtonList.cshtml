@@ -1,0 +1,31 @@
+﻿@using System.Collections
+@using QuantumConcepts.Common.Mvc.Models
+@using QuantumConcepts.Common.Mvc.Extensions
+
+@{
+    string modelValue = (this.Model == null ? null : this.Model.ToString());
+    List<ListItem> list = (List<ListItem>)this.ViewData.GetListItemData();
+}
+
+@if (list != null)
+{
+    foreach (var item in list)
+    {
+        Dictionary<string, object> attributes = new Dictionary<string, object>();
+
+        if (string.Equals(modelValue, item.Value))
+        {
+            attributes.Add("checked", "checked");
+        }
+        <div>
+            <label>@Html.RadioButtonFor(m => m, item.Value, attributes) @item.Label</label>
+            
+            @if (item.CanHaveText)
+            {
+                <input type="text" id="@this.ViewData.TemplateInfo.GetFullHtmlFieldId(null)Text" name="@this.ViewData.TemplateInfo.GetFullHtmlFieldName(null)Text" value="@item.Text" />
+            }
+        </div>
+    }
+}
+
+@Html.ValidationMessageFor(m => m)

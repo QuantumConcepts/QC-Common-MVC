@@ -1,0 +1,8 @@
+﻿@using QuantumConcepts.Common.Extensions;
+@using QuantumConcepts.Common.Mvc.Extensions;
+
+@{
+    string onClick = (this.ViewBag.Href ?? "JavaScript: history.go(-1);");
+}
+
+@{Html.RenderPartial("LinkButton", null, new { Href = onClick, Text = "Cancel", Icon = "cancel" }.ToViewDataDictionary());}

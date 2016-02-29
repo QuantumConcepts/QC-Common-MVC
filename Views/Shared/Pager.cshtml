@@ -1,0 +1,63 @@
+﻿@model QuantumConcepts.Common.Mvc.Models.PagerModel
+@if (this.Model.Count > 0)
+{
+    <div class="Pager pager">
+        <span><strong>@this.Model.Count.ToString("N0")</strong> @(this.Model.Count == 1 ? this.Model.SingluarDescription : this.Model.PluralDescription), showing page <strong>@this.Model.Page.ToString("N0")</strong> of <strong>@this.Model.PageCount.ToString("N0")</strong>.</span>
+        @if (this.Model.PageCount > 1)
+        {
+            <ul>
+                @if (this.Model.Page > 1)
+                {
+                    <li class="FirstLast first-last first">@Html.ActionLink("<<", this.Model.Action, this.Model.Controller, this.Model.GetRouteValues(this.ViewContext, 1), null)</li>
+                }
+                else
+                {
+                    <li class="FirstLast Disabled first-last first disabled">&lt;&lt;</li>
+                }
+
+                @{
+                    int range = 11;
+                    int halfRange = (range / 2);
+                    int minimum = (this.Model.Page - halfRange);
+                    int maximum = (this.Model.Page + halfRange);
+                    int count;
+
+                    if (minimum < 1)
+                    {
+                        maximum += (Math.Abs(minimum) + 1);
+                    }
+                    else if (maximum > this.Model.PageCount)
+                    {
+                        minimum -= (maximum - this.Model.PageCount);
+                    }
+
+                    minimum = Math.Max(1, minimum);
+                    maximum = Math.Min(this.Model.PageCount, maximum);
+                    count = (maximum - minimum + 1);
+
+
+                    foreach (int page in Enumerable.Range(minimum, count))
+                    {
+                        if (this.Model.Page == page)
+                        {
+                                <li class="Number Selected number selected">@page.ToString("N0")</li>
+                        }
+                        else
+                        {
+                                <li class="Number number">@Html.ActionLink(page.ToString("N0"), this.Model.Action, this.Model.Controller, this.Model.GetRouteValues(this.ViewContext, page), null)</li>
+                        }
+                    }
+                }
+
+                @if (this.Model.Page < this.Model.PageCount)
+                {
+                    <li class="FirstLast first-last last">@Html.ActionLink(">>", this.Model.Action, this.Model.Controller, this.Model.GetRouteValues(this.ViewContext, this.Model.PageCount), null)</li>
+                }
+                else
+                {
+                    <li class="FirstLast Disabled first-last last disabled">&gt;&gt;</li>
+                }
+            </ul>
+        }
+    </div>
+}

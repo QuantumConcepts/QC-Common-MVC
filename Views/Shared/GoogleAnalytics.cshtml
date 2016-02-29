@@ -1,0 +1,23 @@
+﻿@model string
+
+@if (this.Model != null)
+{
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+
+        _gaq.push(["_setAccount", "@this.Model"]);
+        _gaq.push(["_trackPageview"]);
+
+        (function ()
+        {
+            var ga = document.createElement("script");
+            var s = null;
+
+            ga.type = "text/javascript";
+            ga.async = true;
+            ga.src = (("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js");
+            s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+}

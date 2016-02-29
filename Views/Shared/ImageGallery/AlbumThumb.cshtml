@@ -1,0 +1,6 @@
+﻿@model QuantumConcepts.Common.Mvc.Models.ImageGallery.AlbumModel
+
+<div class="AlbumThumb" onclick="window.location = '@Url.Action("Album", new { ID = this.Model.ID })';">
+    <h2 title="@this.Model.Title">@this.Model.Title</h2>
+    <img src="@Url.Action("PhotoThumb", new { ID = this.Model.Photos.First().ID })" title="@this.Model.Title" />
+</div>

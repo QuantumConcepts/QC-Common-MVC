@@ -1,0 +1,37 @@
+﻿@using QuantumConcepts.Common.Extensions;
+@using QuantumConcepts.Common.Mvc.Extensions
+
+@{
+    string lastBlockTitle = null;
+
+    <div class="Display">
+        @foreach (var property in this.ViewData.ModelMetadata.Properties.Where(mmd => mmd.ShowForDisplay && !this.ViewData.TemplateInfo.Visited(mmd)))
+        {
+            string currentGroupName = property.GetGroupName();
+            bool hideSurroundingHtml = (property.AdditionalValues.ContainsKey("HideSurroundingHtml") ? (bool)property.AdditionalValues["HideSurroundingHtml"] : false);
+
+            if (lastBlockTitle != currentGroupName)
+            {
+                lastBlockTitle = currentGroupName;
+                
+                <h2>@currentGroupName</h2>
+            }
+            
+            if (!hideSurroundingHtml)
+            {
+                <div class="Item">
+                    <div class="Label">
+                        @((property.DisplayName.IsNullOrEmpty() ? property.PropertyName : property.DisplayName) ?? string.Empty):
+                    </div>
+                    <div class="Input@(property.AdditionalValues.ContainsKey("Style") ? " " + property.AdditionalValues["Style"] : "")">
+                        @Html.Display(property.PropertyName)
+                    </div>
+                </div>
+            }
+            else
+            {
+                @Html.Display(property.PropertyName)
+            }
+        }
+    </div>
+}

@@ -1,0 +1,41 @@
+﻿@using System.Collections
+@using QuantumConcepts.Common.Mvc.Models
+@using QuantumConcepts.Common.Extensions;
+@using QuantumConcepts.Common.Mvc.Extensions;
+
+@model IList
+
+@{
+    List<ListItem> list = (List<ListItem>)this.ViewData.GetListItemData();
+    string noItemsMessage = (this.ViewData.ModelMetadata.AdditionalValues.ContainsKey("NoItemsMessage") ? this.ViewData.ModelMetadata.AdditionalValues["NoItemsMessage"] as string : null);
+}
+
+@if (!list.IsNullOrEmpty()) {
+    foreach (var item in list) {
+        bool isChecked = false;
+
+        if (item.Value is int) {
+            if (this.Model != null && this.Model.Contains((int)item.Value)) {
+                isChecked = true;
+            }
+        } else {
+            if (this.Model != null && this.Model.Contains(item.Value)) {
+                isChecked = true;
+            }
+        }
+
+        <div>
+            <label><input type="checkbox" id="@this.ViewData.TemplateInfo.GetFullHtmlFieldId(null)" name="@this.ViewData.TemplateInfo.GetFullHtmlFieldName(null)" value="@item.Value" @(isChecked ? "checked=\"checked\"" : "") onclick="$(this).attr('checked') == 'checked' ? $(this).parent().parent().find('#@this.ViewData.TemplateInfo.GetFullHtmlFieldId(null)Text').removeAttr('disabled') : $(this).parent().parent().find('#@this.ViewData.TemplateInfo.GetFullHtmlFieldId(null)Text').attr('disabled', 'disabled');" /> @item.Label</label>
+
+            @if (item.CanHaveText) {
+                <input type="text" id="@this.ViewData.TemplateInfo.GetFullHtmlFieldId(null)Text" name="@this.ViewData.TemplateInfo.GetFullHtmlFieldName(null)Text" value="@item.Text" disabled="disabled" />
+            } else {
+                <input type="hidden" id="@this.ViewData.TemplateInfo.GetFullHtmlFieldId(null)Text" name="@this.ViewData.TemplateInfo.GetFullHtmlFieldName(null)Text" disabled="disabled" />
+            }
+        </div>
+    }
+
+    @Html.ValidationMessageFor(m => m)
+} else if (!noItemsMessage.IsNullOrEmpty()) {
+    <div class="Input">@noItemsMessage</div>
+}

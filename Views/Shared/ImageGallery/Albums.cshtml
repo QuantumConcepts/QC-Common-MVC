@@ -1,0 +1,10 @@
+﻿@using QuantumConcepts.Common.Mvc.Models.ImageGallery;
+
+@model IndexModel
+
+<div class="Albums">
+    @foreach (AlbumModel album in this.Model.Albums)
+    {
+        Html.RenderPartial("ImageGallery/AlbumThumb", album);
+    }
+</div>

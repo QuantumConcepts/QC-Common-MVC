@@ -1,0 +1,64 @@
+﻿@using QuantumConcepts.Common.Extensions
+@using QuantumConcepts.Common.Mvc.Extensions
+
+@{
+    string lastBlockTitle = null;
+
+    foreach (var property in this.ViewData.ModelMetadata.Properties.Where(mmd => mmd.ShowForEdit && !this.ViewData.TemplateInfo.Visited(mmd)))
+    {
+        string currentGroupName = property.GetGroupName();
+
+        if (lastBlockTitle != currentGroupName)
+        {
+            lastBlockTitle = currentGroupName;
+                
+            <h2>@currentGroupName</h2>
+        }
+
+        if ("HiddenInput".Equals(property.TemplateHint))
+        {
+            @Html.Editor(property.PropertyName)
+        }
+        else
+        {
+            bool hideSurroundingHtml = (property.AdditionalValues.ContainsKey("HideSurroundingHtml") ? (bool)property.AdditionalValues["HideSurroundingHtml"] : false);
+            MvcHtmlString propertyContent = null;
+
+            if (property.AdditionalValues.HasListItemData())
+            {
+                var list = property.AdditionalValues.GetListItemDataFromParent(this.ViewData);
+                    
+                propertyContent = Html.Editor(property.PropertyName, new { List = list });
+            }
+            else
+            {
+                propertyContent = Html.Editor(property.PropertyName);
+            }
+            
+            if (!hideSurroundingHtml)
+            {
+                string help = (property.AdditionalValues.ValueOrDefault("Help") as string);
+                
+                <div class="Item">
+                    <div class="Label@(property.IsRequired ? " Required" : "")">
+                        @((property.DisplayName.IsNullOrEmpty() ? property.PropertyName : property.DisplayName) ?? string.Empty):
+                    </div>
+                    <div class="Input@(property.AdditionalValues.ContainsKey("Style") ? " " + property.AdditionalValues["Style"] : "")">
+                    
+                        @propertyContent
+
+                        @if (!help.IsNullOrEmpty())
+                        {
+                            <div class="Help">@help</div>
+                        }
+                    
+                    </div>
+                </div>
+            }
+            else
+            {
+                @propertyContent
+            }
+        }
+    }
+}
